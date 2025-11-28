@@ -285,46 +285,6 @@ The notebook generates:
 
 ---
 
-## Business Recommendations
-
-### Loyal Customers
-
-| Strategy        | Action                                 |
-| --------------- | -------------------------------------- |
-| Retention       | VIP loyalty programs                   |
-| Engagement      | Exclusive early access to new products |
-| Personalization | Personalized product recommendations   |
-| Growth          | Referral incentives                    |
-
-### Churns / One Time Spenders
-
-| Strategy    | Action                              |
-| ----------- | ----------------------------------- |
-| Win-back    | Targeted email campaigns            |
-| Incentive   | Special discount offers             |
-| Feedback    | Surveys to understand churn reasons |
-| Retargeting | Social media and display ads        |
-
-### High Risk Churns
-
-| Strategy      | Action                        |
-| ------------- | ----------------------------- |
-| **URGENT**    | Personalized outreach         |
-| Re-engagement | "We miss you" offers          |
-| Exclusive     | Special deals and promotions  |
-| Feedback      | Customer satisfaction surveys |
-
-### New Customers / Low Spenders
-
-| Strategy   | Action                          |
-| ---------- | ------------------------------- |
-| Onboarding | Welcome email series            |
-| Incentive  | First-time buyer discounts      |
-| Education  | Product education content       |
-| Upsell     | Cross-sell and upsell campaigns |
-
----
-
 ## Contributors
 
 | Name             | Role           | GitHub                                               |
