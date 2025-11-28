@@ -13,8 +13,6 @@
 - [Usage](#usage)
 - [Results](#results)
 - [Key Findings](#key-findings)
-- [Business Recommendations](#business-recommendations)
-- [Future Improvements](#future-improvements)
 - [Contributors](#contributors)
 - [License](#license)
 
