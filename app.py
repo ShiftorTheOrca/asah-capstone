@@ -1,10 +1,13 @@
-import streamlit as st
 import pandas as pd
+
+from sklearn.preprocessing import LabelEncoder
+
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.preprocessing import LabelEncoder
-from threading import RLock
 import plotly.graph_objects as go
+
+import streamlit as st
+from threading import RLock
 
 
 _lock = RLock()
@@ -12,7 +15,7 @@ sns.set_style("whitegrid")
 
 @st.cache_data
 def load_data():
-    path = "./online_retail_uci_clustering.csv"
+    path = "online_retail_uci_clustering.csv"
     data = pd.read_csv(path)
     return data
 
@@ -47,7 +50,7 @@ def plot_categorical_columns(df):
         categorical_cols = df.select_dtypes(include=['object']).columns
         num_vars = df[categorical_cols].shape[1]
 
-        n_cols = 1
+        n_cols = 2
         n_rows = -(-num_vars // n_cols)
 
         fig, axes = plt.subplots(n_rows, n_cols, figsize=(12, n_rows * 4))
@@ -282,6 +285,14 @@ def plot_pairplot_rfm(df_rfm):
 
 # Streamlit Deployment
 st.set_page_config(layout="wide", page_title="Peningkatan Efisiensi Strategi Pemasaran Berbasis Visualisasi Segmen Pelanggan")
+st.html('''
+    <style>
+        [alt=Logo] {
+            height: 3rem;
+        }
+    </style>
+        ''')
+st.logo("logo.png")
 
 if 'page' not in st.session_state:
     st.session_state.page = "home"
@@ -300,62 +311,104 @@ with st.sidebar:
 
 if st.session_state.page == "home":
     st.title("Peningkatan Efisiensi Strategi Pemasaran Berbasis Visualisasi Segmen Pelanggan", text_alignment='center')
-    st.write("""
-    This application performs customer segmentation using clustering techniques on the Online Retail UCI dataset.
-    Navigate through the sidebar to explore data analysis and RFM analysis of customer segments.
-    """)
+    st.header("Dataset Information")
+    st.write('''
+        This is a transactional data set which contains all the transactions occurring between 01/12/2010 and 09/12/2011 for a UK-based and registered non-store online retail.The company mainly sells unique all-occasion gifts. Many customers of the company are wholesale
+    ''')
+    
+    
 if st.session_state.page == "data_analysis":
     st.title("Online Retail UCI Clustering Data")
     
-    cluster_filter = st.selectbox("Filter Cluster", options=['All', 'Loyal Customer', 'Regular Customer', 'Churn/One Time Spender', 'High Risk Churn'])
-    
-    if cluster_filter != 'All':
-        df_copy = df_copy[df_copy['Label'] == cluster_filter]
+    with st.container():
+        cluster_filter = st.selectbox("Filter Cluster", options=['All', 'Loyal Customer', 'Regular Customer', 'Churn/One Time Spender', 'High Risk Churn'], width=300)
         
-    st.dataframe(df_copy)
-    st.download_button(label="Download CSV", data=df.to_csv(index=False), file_name='online_retail_uci_clustering.csv')
+        if cluster_filter != 'All':
+            df_copy = df_copy[df_copy['Label'] == cluster_filter]
+            
+        st.dataframe(df_copy)
+        st.download_button(label="Download CSV", data=df.to_csv(index=False), file_name='online_retail_uci_clustering.csv')
 
-    # Menampilkan Bar Chart kolom numeric
-    fig = plot_numerical_columns(df_copy)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Bar Chart kolom numeric
+        fig = plot_numerical_columns(df_copy)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
 
-    # Menampilkan Bar Chart kolom kategorikal
-    fig = plot_categorical_columns(df_copy)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
-    # Menampilkan Heatmap korelasi antar data
-    fig = plot_correlation_heatmap(df_copy)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
-
-    # Menampilkan Pie Chart rasio Category tertinggi per Cluster
-    fig = plot_most_spend_category_per_cluster(df_copy)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
-
-    # Menampilkan Pie Chart rasio Seasonality tertinggi per Cluster
-    fig = plot_most_spend_seasonality_per_cluster(df_copy)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Bar Chart kolom kategorikal
+        fig = plot_categorical_columns(df_copy)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
     
-    fig = plot_monthly_sales_per_cluster(df_copy)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Heatmap korelasi antar data
+        fig = plot_correlation_heatmap(df_copy)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
+
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Pie Chart rasio Category tertinggi per Cluster
+        fig = plot_most_spend_category_per_cluster(df_copy)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
+
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Pie Chart rasio Seasonality tertinggi per Cluster
+        fig = plot_most_spend_seasonality_per_cluster(df_copy)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
+    
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Line Chart Monthly Sales per Cluster
+        fig = plot_monthly_sales_per_cluster(df_copy)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
     
 elif st.session_state.page == "rfm_analysis":
     df_rfm = calculate_rfm(df_copy)
     
     st.title("RFM Analysis")
 
-    cluster_filter_rfm = st.selectbox("Filter Cluster", options=['All', 'Loyal Customer', 'Regular Customer', 'Churn/One Time Spender', 'High Risk Churn'])
-    if cluster_filter_rfm != 'All':
-        df_rfm = df_rfm[df_rfm['Label'] == cluster_filter_rfm]
-        
-    st.dataframe(df_rfm)
+    with st.container():
+        cluster_filter_rfm = st.selectbox("Filter Cluster", options=['All', 'Loyal Customer', 'Regular Customer', 'Churn/One Time Spender', 'High Risk Churn'], width=300)
+        if cluster_filter_rfm != 'All':
+            df_rfm = df_rfm[df_rfm['Label'] == cluster_filter_rfm]
+            
+        st.dataframe(df_rfm)
 
-    # Menampilkan visualisasi 3D dari hasil Clustering
-    fig = plot_3d_rfm(df_rfm)
-    st.plotly_chart(figure_or_data=fig, height=900)
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan visualisasi 3D dari hasil Clustering
+        fig = plot_3d_rfm(df_rfm)
+        st.plotly_chart(figure_or_data=fig, height=900)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
 
-    # Menampilkan Pie Chart segmentasi Customer per Cluster
-    fig = plot_segmentation_and_monetary_per_cluster(df_rfm)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Pie Chart segmentasi Customer per Cluster
+        fig = plot_segmentation_and_monetary_per_cluster(df_rfm)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
     
-    # Menampilkan Pairplot RFM per Cluster
-    fig = plot_pairplot_rfm(df_rfm)
-    st.pyplot(fig=fig, clear_figure=True, width='stretch')
+    with st.container(width = 1200, horizontal_alignment='center'):
+        # Menampilkan Pairplot RFM per Cluster
+        fig = plot_pairplot_rfm(df_rfm)
+        st.pyplot(fig=fig, clear_figure=True)
+        expander = st.expander("See explanation")
+        expander.write('''
+        ''')
