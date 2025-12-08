@@ -1,3 +1,4 @@
+# Import Library
 import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
@@ -9,7 +10,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from threading import RLock
 
-
+# Main Functions
 _lock = RLock()
 sns.set_style("whitegrid")
 
@@ -283,12 +284,16 @@ def plot_pairplot_rfm(df_rfm):
     
     return fig
 
-# Streamlit Deployment
-st.set_page_config(layout="wide", page_title="Peningkatan Efisiensi Strategi Pemasaran Berbasis Visualisasi Segmen Pelanggan")
+# Streamlit Deployment App
+df = load_data()
+df_copy = df.copy()
+
+st.set_page_config(layout="wide", page_title="Peningkatan Efisiensi Strategi Pemasaran Berbasis Visualisasi Segmen Pelanggan", initial_sidebar_state="expanded")
 st.html('''
     <style>
         [alt=Logo] {
-            height: 3rem;
+            height: 4rem;
+            margin-top: 2rem;
         }
     </style>
         ''')
@@ -296,28 +301,49 @@ st.logo("logo.png")
 
 if 'page' not in st.session_state:
     st.session_state.page = "home"
-    
-df = load_data()
-df_copy = df.copy()
 
 with st.sidebar:
     st.write("## Menu")
+    
     if st.button("Home", width='stretch'):
         st.session_state.page = "home"
+        
     if st.button("Data Analysis", width='stretch'):
         st.session_state.page = "data_analysis"
+        
     if st.button("RFM Analysis", width='stretch'):
         st.session_state.page = "rfm_analysis"
 
 if st.session_state.page == "home":
     st.title("Peningkatan Efisiensi Strategi Pemasaran Berbasis Visualisasi Segmen Pelanggan", text_alignment='center')
-    st.header("Dataset Information")
+    
+    st.divider()
+    
+    st.header("Deskripsi Aplikasi")
     st.write('''
-        This is a transactional data set which contains all the transactions occurring between 01/12/2010 and 09/12/2011 for a UK-based and registered non-store online retail.The company mainly sells unique all-occasion gifts. Many customers of the company are wholesale
+        - Aplikasi ini dirancang untuk membantu bisnis memahami perilaku pelanggan mereka melalui segmentasi yang didasarkan pada data pembelian historis secara. Aplikasi ini menyediakan berbagai visualisasi interaktif yang memungkinkan pengguna untuk menjelajahi karakteristik masing-masing segmen pelanggan. 
+        - Pengguna dapat melihat distribusi pembelian, frekuensi pembelian, dan nilai pembelian rata-rata untuk setiap segmen. Selain itu, aplikasi ini juga menampilkan analisis RFM (Recency, Frequency, Monetary) yang memberikan wawasan mendalam tentang loyalitas pelanggan dan potensi mereka.
     ''')
     
+    st.header("Deskripsi Dataset")
+    st.write('''
+        - Dataset yang digunakan dalam aplikasi ini adalah "Online Retail UCI Clustering Data" yang berisi informasi transaksi pembelian dari sebuah toko retail online. Dataset ini mencakup berbagai atribut seperti InvoiceNo, StockCode, Description, Quantity, InvoiceDate, UnitPrice, CustomerID, Country, Category, Seasonality, Sales, Cluster, dan Label.
+        - Data ini telah diproses dan dianalisis menggunakan teknik clustering untuk mengelompokkan pelanggan berdasarkan pola pembelian mereka. Hasil clustering ini kemudian digunakan untuk membuat visualisasi yang membantu dalam memahami karakteristik masing-masing segmen pelanggan.
+    ''')
     
-if st.session_state.page == "data_analysis":
+    st.divider()
+    
+    st.subheader("Repositori GitHub")
+    st.write("Link: [asah-capstone](https://github.com/ShiftorTheOrca/asah-capstone)")
+    
+    st.subheader("Contributors")
+    st.write('''
+        - [Leonardo Sanjaya | M320D5Y0992 - ShiforTheOrca](https://github.com/ShiftorTheOrca)
+        - [Nelson Ahli | M320D5Y1490 - nelsooooon](https://github.com/nelsooooon)
+        - [Steven Gunawan | M320D5Y1870 - veeennn](https://github.com/veeennn)
+    ''')
+    
+elif st.session_state.page == "data_analysis":
     st.title("Online Retail UCI Clustering Data")
     
     with st.container():
@@ -328,55 +354,112 @@ if st.session_state.page == "data_analysis":
             
         st.dataframe(df_copy)
         st.download_button(label="Download CSV", data=df.to_csv(index=False), file_name='online_retail_uci_clustering.csv')
+        
+    tab_numerical, tab_categorical, tab_heatmap, tab_analysis = st.tabs(["Numerical Columns", "Categorical Columns", "Correlation Heatmap", "Feature Analysis"])    
 
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Bar Chart kolom numeric
-        fig = plot_numerical_columns(df_copy)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
+    # Menampilkan Bar Chart kolom numeric
+    with tab_numerical:
+        st.markdown("### Box Plot Numerical Columns", text_alignment='center')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            fig = plot_numerical_columns(df_copy)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - **InvoiceNo**: Nomor unik untuk setiap transaksi yang dilakukan oleh pelanggan.
+                
+                - **CustomerID**: Kode unik untuk setiap pelanggan.
+                
+                - **Quantity**: Jumlah unit produk yang dibeli dalam setiap transaksi. Terdapat beberapa Customer yang melakukan pembelian dengan Quantity di atas rata-rata, hal ini dapat diindikasikan sebagai pembelian grosir.
+                
+                - **UnitPrice**: Harga per unit produk yang dibeli. Terdapat beberapa Customer yang melakukan pembelian dengan UnitPrice di atas rata-rata, hal ini dapat diindikasikan sebagai pembelian produk premium.
+                
+                - **Sales**: Total penjualan yang dihasilkan dari setiap transaksi (Quantity x UnitPrice). Terdapat beberapa Customer yang menghasilkan Sales di atas rata-rata, hal ini dapat diindikasikan sebagai high-value customer.
+                
+                - **Cluster**: Hasil segmentasi pelanggan berdasarkan analisis clustering.
+            ''')
 
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Bar Chart kolom kategorikal
-        fig = plot_categorical_columns(df_copy)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
+    # Menampilkan Bar Chart kolom kategorikal
+    with tab_categorical:
+        st.markdown("### Bar Chart Categorical Columns", text_alignment='center')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            fig = plot_categorical_columns(df_copy)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - **StockCode**: Kode unik untuk setiap produk yang dijual.
+                
+                - **Description**: Deskripsi singkat tentang produk yang dijual.
+                
+                - **InvoiceDate**: Tanggal dan waktu ketika transaksi dilakukan.
+                
+                - **Country**: Negara tempat pelanggan berada. Analisis dilakukan pada pelanggan dari United Kingdom saja.
+                
+                - **Category**: Kategori produk yang dibeli oleh pelanggan. Terdapat beberapa kategori produk yang paling banyak dibeli oleh pelanggan, seperti 'decoration', 'kitchen', dan 'bags'.
+                
+                - **Seasonality**: Musim atau periode waktu tertentu ketika pembelian dilakukan (misalnya, Winter, Fall, dsb.). Sebagian besar pembelian dilakukan pada musim Fall.
+                
+                - **Label**: Kategori segmentasi pelanggan berdasarkan hasil clustering (Loyal Customer, Regular Customer, Churn/One Time Spender, High Risk Churn).
+            ''')
     
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Heatmap korelasi antar data
-        fig = plot_correlation_heatmap(df_copy)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
+    # Menampilkan Heatmap korelasi antar data
+    with tab_heatmap:
+        st.markdown("### Heatmap", text_alignment='center')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            fig = plot_correlation_heatmap(df_copy)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - Terdapat korelasi **positif** yang kuat antara kolom Quantity dan Sales, yang menunjukkan bahwa semakin banyak unit produk yang dibeli, semakin tinggi total penjualan yang dihasilkan.
+                
+                - Terdapat korelasi **negatif** antara Seasonality dan InvoiceDate, yang mengindikasikan bahwa pembelian cenderung menurun seiring berjalannya waktu dalam dataset ini.
+                
+                - Kolom Cluster tidak menunjukkan korelasi yang signifikan dengan kolom numerik lainnya, yang mengindikasikan bahwa segmentasi pelanggan berdasarkan clustering tidak secara langsung terkait dengan variabel-variabel numerik dalam dataset ini.
+            ''')
 
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Pie Chart rasio Category tertinggi per Cluster
-        fig = plot_most_spend_category_per_cluster(df_copy)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
-
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Pie Chart rasio Seasonality tertinggi per Cluster
-        fig = plot_most_spend_seasonality_per_cluster(df_copy)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
+    with tab_analysis:
+        st.markdown("### Feature Analysis", text_alignment='center')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            # Menampilkan Pie Chart rasio Category tertinggi per Cluster
+            fig = plot_most_spend_category_per_cluster(df_copy)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - **Cluster 1 (Loyal Customer)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada kategori 'decoration' (55.3%) dan 'bags' (23.3%).
+                - **Cluster 2 (Regular Customer)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada kategori 'decoration' (55.4%), 'bags' (15.3%), dan 'kitchen' (12.5%) sebagai kategori utama.
+                - **Cluster 3 (Churn/One Time Spender)**: Pelanggan dalam cluster menunjukkan preferensi yang lebih beragam, dengan kategori 'decoration' (40.7%), 'kitchen' (12.9%), dan 'others' (11.2%).
+                - **Cluster 4 (High Risk Churn)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada kategori 'decoration' (50.5%), 'kitchen' (12.6%), dan 'bags' (10.8%) sebagai kategori utama.
+            ''')
+            
+            # Menampilkan Line Chart Monthly Sales per Cluster
+            fig = plot_monthly_sales_per_cluster(df_copy)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - **Cluster 0 (Loyal Customer)**: Menunjukkan tren penjualan yang tinggi dan relatif stabil sepanjang tahun dengan puncak penjualan pada bulan September
+                - **Cluster 1 (Regular Customer)**: Menunjukkan tren penjualan yang meningkat secara signifikan pada bulan November, yang mungkin terkait dengan musim liburan.
+                - **Cluster 2 (Churn/One Time Spender)**: Menunjukkan tren penjualan sangat rendah dan fluktuatif sepanjang tahun dengan puncak penjualan pada bulan September, Oktober, dan November.
+                - **Cluster 3 (High Risk Churn)**: Menunjukkan tren penjualan yang sedikit fluktuatif dan dibawah Regular Customer sepanjang tahun dengan puncak penjualan pada bulan November, yang mungkin terkait dengan musim liburan.
+            ''')
     
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Line Chart Monthly Sales per Cluster
-        fig = plot_monthly_sales_per_cluster(df_copy)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
-    
+            # Menampilkan Pie Chart rasio Seasonality tertinggi per Cluster
+            fig = plot_most_spend_seasonality_per_cluster(df_copy)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - **Cluster 1 (Loyal Customer)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada musim Fall (56.3%) dan Spring (18.4%).
+                - **Cluster 2 (Regular Customer)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada musim Fall (49.9%), Summer (17.8%), dan Winter (17.2%).
+                - **Cluster 3 (Churn/One Time Spender)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada musim Fall (45.0%) dan Spring (21.4%).
+                - **Cluster 4 (High Risk Churn)**: Pelanggan dalam cluster ini cenderung menghabiskan sebagian besar pembelian mereka pada musim Fall (46.5%), Spring dan Summer (19.2%).
+            ''')
+        
 elif st.session_state.page == "rfm_analysis":
     df_rfm = calculate_rfm(df_copy)
     
@@ -389,26 +472,45 @@ elif st.session_state.page == "rfm_analysis":
             
         st.dataframe(df_rfm)
 
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan visualisasi 3D dari hasil Clustering
-        fig = plot_3d_rfm(df_rfm)
-        st.plotly_chart(figure_or_data=fig, height=900)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
-
-    with st.container(width = 1200, horizontal_alignment='center'):
-        # Menampilkan Pie Chart segmentasi Customer per Cluster
-        fig = plot_segmentation_and_monetary_per_cluster(df_rfm)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
+    tab_rfm_3d, tab_cluster_analysis= st.tabs(["3D RFM Visualization", "Cluster Analysis"])
     
-    with st.container(width = 1200, horizontal_alignment='center'):
+    # Menampilkan visualisasi 3D dari hasil Clustering
+    with tab_rfm_3d:
+        st.markdown("### 3D RFM Visualization", text_alignment='center')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            fig = plot_3d_rfm(df_rfm)
+            st.plotly_chart(figure_or_data=fig, height=900)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - Visualisasi 3D ini menampilkan segmentasi pelanggan berdasarkan metrik RFM (Recency, Frequency, Monetary). Masing-masing titik mewakili seorang pelanggan, dan warna titik menunjukkan cluster atau segmen pelanggan yang berbeda berdasarkan hasil analisis clustering.
+                - Sumbu X mewakili Recency (berapa lama sejak pembelian terakhir), sumbu Y mewakili Frequency (seberapa sering pelanggan melakukan pembelian), dan sumbu Z mewakili Monetary (total nilai pembelian pelanggan).
+            ''')
+
+    with tab_cluster_analysis:
+        # Menampilkan Pie Chart segmentasi Customer per Cluster
+        st.markdown("### Cluster Analysis", text_alignment='center')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            fig = plot_segmentation_and_monetary_per_cluster(df_rfm)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - Pie chart pertama menunjukkan proporsi pelanggan dalam setiap segmen berdasarkan label cluster [Loyal Customer (2.7%), Regular Customer (12.3%), Churn/One Time Spender (54.1%), High Risk Churn (30.9%)]. Hal ini memberikan gambaran tentang distribusi pelanggan di berbagai segmen.
+                - Pie chart kedua menunjukkan kontribusi penjualan dari masing-masing segmen pelanggan [Loyal Customer (75.9%), Regular Customer (16.2%), Churn/One Time Spender (1.9%), High Risk Churn (6.0%)]. Hal ini membantu dalam memahami segmen mana yang memberikan kontribusi terbesar terhadap total penjualan.
+            ''')
+    
         # Menampilkan Pairplot RFM per Cluster
-        fig = plot_pairplot_rfm(df_rfm)
-        st.pyplot(fig=fig, clear_figure=True)
-        expander = st.expander("See explanation")
-        expander.write('''
-        ''')
+        col1, col2, col3 = st.columns([1, 3, 1])
+        
+        with col2:
+            fig = plot_pairplot_rfm(df_rfm)
+            st.pyplot(fig=fig, clear_figure=True)
+            expander = st.expander("See explanation")
+            expander.write('''
+                - Pairplot ini menampilkan hubungan antar metrik RFM (Recency, Frequency, Monetary) untuk setiap cluster pelanggan. Setiap titik mewakili seorang pelanggan, dan warna titik menunjukkan cluster atau segmen pelanggan yang berbeda.
+                - Dari visualisasi ini, kita dapat mengamati pola distribusi pelanggan dalam setiap cluster berdasarkan metrik RFM mereka. Misalnya, pelanggan dalam cluster "Loyal Customer" cenderung memiliki nilai Frequency dan Monetary yang lebih tinggi dibandingkan dengan cluster lainnya.
+                - Karakteristik masing-masing segmen pelanggan berdasarkan perilaku pembelian mereka dapat diidentifikasi, yang dapat membantu dalam merancang strategi pemasaran yang lebih efektif dan personalisasi penawaran kepada pelanggan.
+            ''')
