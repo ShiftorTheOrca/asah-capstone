@@ -47,7 +47,6 @@ Dataset yang digunakan berasal dari [Online Retail Dataset milik UCI](https://ar
    Navigasi ke folder `src` dan install semua library yang diperlukan:
 
    ```bash
-   cd src
    pip install -r requirements.txt
    ```
 
@@ -61,11 +60,11 @@ Dataset yang digunakan berasal dari [Online Retail Dataset milik UCI](https://ar
    - Dan library pendukung lainnya
 
 4. **Download dataset (opsional):**
-   Dataset sudah tersedia di folder `assets/`. Jika ingin menggunakan Kaggle API, pastikan file `kaggle.json` sudah dikonfigurasi dengan credentials Kaggle Anda.
+   Download dataset menggunakan Kaggle API, pastikan file `kaggle.json` sudah dikonfigurasi dengan credentials Kaggle Anda dan diletakkan di root project. Dataset untuk streamlit app sudah tersedia pada folder `assets/`.
 
 ---
 
-## Tautan Model ML (Jika Ada)
+## Model Machine Learning
 
 Model clustering HDBSCAN yang digunakan telah dilatih pada dataset Online Retail dan hasilnya disimpan dalam file CSV processed:
 
@@ -74,7 +73,6 @@ Model clustering HDBSCAN yang digunakan telah dilatih pada dataset Online Retail
 Model dapat dilatih ulang menggunakan script yang tersedia di dalam notebook:
 
 - `customer_segmentation_capstone.ipynb` - Notebook lengkap untuk training dan evaluation model
-- `Asah_Fetch_A25_CS328.ipynb` - Notebook untuk fetch dan preprocessing data
 
 ---
 
@@ -146,25 +144,26 @@ Aplikasi Streamlit menyediakan:
 ```
 asah-capstone/
 ├── assets/
-│   ├── Online Retail.csv
+│   ├── logo.png
+│   ├── Online Retail.csv (not included)
 │   └── online_retail_uci_clustering.csv
 ├── src/
 │   ├── app.py (Aplikasi Streamlit)
-│   ├── requirements.txt
-│   └── customer_segmentation_capstone.ipynb
-├── Asah_Fetch_A25_CS328.ipynb
-├── kaggle.json (Credentials Kaggle)
+│   ├── customer_segmentation_capstone.ipynb
+│   └── online-retail-uci-dataset.zip (not included)
+├── requirements.txt
+├── kaggle.json (Credentials Kaggle, not included)
 ├── README.md
-└── venv/ (Virtual environment)
+└── venv/ (Virtual environment, not included)
 ```
 
 ---
 
 ## Troubleshooting
 
-- **Port 8501 sudah digunakan**: Gunakan `streamlit run src/app.py --server.port 8502` untuk menggunakan port berbeda
+- **Port 8501 sudah digunakan**: Gunakan `streamlit run src/app.py --server.port=8502` untuk menggunakan port berbeda
 - **Module tidak ditemukan**: Pastikan virtual environment sudah diaktifkan dan dependencies sudah diinstall dengan benar
-- **Dataset tidak ditemukan**: Pastikan file CSV ada di folder `assets/`
+- **kaggle.json tidak ditemukan**: Pastikan mengkonfigurasi file kaggle.json pada root project
 
 ---
 
