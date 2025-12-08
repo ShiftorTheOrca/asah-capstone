@@ -16,7 +16,7 @@ sns.set_style("whitegrid")
 
 @st.cache_data
 def load_data():
-    path = "online_retail_uci_clustering.csv"
+    path = "assets/online_retail_uci_clustering.csv"
     data = pd.read_csv(path)
     return data
 
@@ -297,7 +297,7 @@ st.html('''
         }
     </style>
         ''')
-st.logo("logo.png")
+st.logo("assets/logo.png")
 
 if 'page' not in st.session_state:
     st.session_state.page = "home"
