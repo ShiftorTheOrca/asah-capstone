@@ -50,7 +50,7 @@ def plot_categorical_columns(df):
         categorical_cols = df.select_dtypes(include=['object']).columns
         num_vars = df[categorical_cols].shape[1]
 
-        n_cols = 2
+        n_cols = 1
         n_rows = -(-num_vars // n_cols)
 
         fig, axes = plt.subplots(n_rows, n_cols, figsize=(12, n_rows * 4))
