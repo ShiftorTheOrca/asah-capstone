@@ -11,4 +11,4 @@ menggunakan metode RFM dengan algoritma clustering HDBSCAN. Dataset yang digunak
 3. Buka terminal pada komputer Anda, dan navigasi ke folder repository lokal Anda.
 4. Jalankan program dengan command `streamlit run app.py`. Device akan menjalankan aplikasi web untuk menampilkan informasi hasil clustering yang telah dilakukan. 
 5. Buka browser Anda, dan masukkan alamat `localhost:8501` untuk mengakses server web yang dijalankan. 
-6. Gunakan keybind `Ctrl + C` untuk memberhentikan server.
+6. Gunakan keybind `Ctrl + C` pada terminal yang sama untuk memberhentikan server.
