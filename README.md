@@ -66,7 +66,7 @@ Dataset yang digunakan berasal dari [Online Retail Dataset milik UCI](https://ar
 
 ## Model Machine Learning
 
-Model clustering HDBSCAN yang digunakan telah dilatih pada dataset Online Retail dan hasilnya disimpan dalam file CSV processed:
+Proyek ini menggunakan algoritma **HDBSCAN** untuk clustering yang lebih robust dibanding K-Means dalam menangani data dengan density yang bervariasi. Model clustering HDBSCAN yang digunakan telah dilatih pada dataset Online Retail dan hasilnya disimpan dalam file CSV processed:
 
 - **Dataset yang sudah diproses:** `assets/online_retail_uci_clustering.csv` - Berisi data dengan hasil clustering dan nilai RFM scores
 
@@ -119,10 +119,24 @@ Model dapat dilatih ulang menggunakan script yang tersedia di dalam notebook:
 
 ### Metode 2: Menjalankan Notebook Jupyter
 
-Untuk melakukan training ulang atau exploratory data analysis, Anda dapat menjalankan notebook:
+Untuk melakukan training ulang atau exploratory data analysis, Anda dapat menjalankan notebook.
+
+**Install Jupyter terlebih dahulu (jika belum):**
 
 ```bash
-jupyter notebook customer_segmentation_capstone.ipynb
+pip install notebook
+```
+
+Kemudian jalankan notebook menggunakan:
+
+```bash
+jupyter notebook src/customer_segmentation_capstone.ipynb
+```
+
+Jika ingin melihat notebook sistem rekomendasi:
+
+```bash
+jupyter notebook src/Sistem_Rekomendasi.ipynb
 ```
 
 ---
@@ -137,6 +151,16 @@ Aplikasi Streamlit menyediakan:
 - **Statistik Deskriptif**: Ringkasan statistik data pelanggan
 - **Word Cloud**: Visualisasi kata kunci dari data
 
+#### Sistem Rekomendasi Produk
+
+Aplikasi juga dilengkapi dengan **Sistem Rekomendasi Produk** yang menggunakan metode **Content-Based Filtering** untuk memberikan rekomendasi produk kepada pelanggan berdasarkan preferensi pembelian mereka.
+
+**Fitur Rekomendasi:**
+
+- Rekomendasi berdasarkan deskripsi produk
+- Rekomendasi untuk pelanggan individual berdasarkan riwayat pembelian
+- Scoring similarity untuk setiap rekomendasi
+
 ---
 
 ## Struktur Folder
@@ -150,10 +174,12 @@ asah-capstone/
 ├── src/
 │   ├── app.py (Aplikasi Streamlit)
 │   ├── customer_segmentation_capstone.ipynb
+│   ├── Sistem_Rekomendasi.ipynb
 │   └── online-retail-uci-dataset.zip (not included)
 ├── requirements.txt
-├── kaggle.json (Credentials Kaggle, not included)
+├── .gitignore
 ├── README.md
+├── kaggle.json (Credentials Kaggle, not included)
 └── venv/ (Virtual environment, not included)
 ```
 
@@ -166,7 +192,3 @@ asah-capstone/
 - **kaggle.json tidak ditemukan**: Pastikan mengkonfigurasi file kaggle.json pada root project
 
 ---
-
-## Catatan
-
-Proyek ini menggunakan algoritma **HDBSCAN** untuk clustering yang lebih robust dibanding K-Means dalam menangani data dengan density yang bervariasi. Metode **RFM** dipilih karena efektif dalam mengidentifikasi customer value dan behavior patterns.
