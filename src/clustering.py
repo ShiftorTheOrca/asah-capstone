@@ -16,9 +16,6 @@ from sklearn.cluster import HDBSCAN
 
 # Mengambil dataset dari Kaggle
 if not os.path.exists('assets/Online Retail.csv'):
-    os.makedirs(os.path.expanduser('~/.kaggle'), exist_ok=True)
-    shutil.copy('kaggle.json', os.path.expanduser('~/.kaggle/kaggle.json'))
-
     os.system('kaggle datasets download -d viridianachow/online-retail-uci-dataset')
 
     with zipfile.ZipFile('online-retail-uci-dataset.zip', 'r') as zip_ref:
